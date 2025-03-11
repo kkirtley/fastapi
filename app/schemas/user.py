@@ -1,9 +1,12 @@
 """ User schemas. """
-from pydantic import BaseModel, EmailStr, ConfigDict
+from typing import List
+from pydantic import BaseModel, EmailStr
+
 
 class BaseConfig(BaseModel):
     """ Base configuration for ORM models. """
-    model_config = ConfigDict(from_attributes=True)
+    class Config:
+        from_attributes = True
 
 class UserCreate(BaseConfig):
     """ Schema for creating a new user. """
@@ -24,4 +27,7 @@ class UserDelete(BaseConfig):
 class UserUpdate(UserResponse):
     """ Schema for updating a user. """
     updated: bool
-    
+
+class UserList(BaseConfig):
+    """ Schema for listing users. """
+    users: List[UserResponse]

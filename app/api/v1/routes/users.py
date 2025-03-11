@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException
 from app.models.user import User
-from app.schemas.user import UserCreate, UserResponse, UserDelete, UserUpdate
+from app.schemas.user import UserCreate, UserResponse, UserDelete, UserUpdate, UserList
 from app.core.database import get_db
 
 router = APIRouter(tags=["Users"])
@@ -48,3 +48,9 @@ def delete_user(user_id: int, db: Session = Depends(get_db)) -> UserDelete:
     db.delete(db_user)
     db.commit()
     return UserDelete(id=user_id, deleted=True)
+
+@router.get("/", response_model=UserList) 
+def get_users(db: Session = Depends(get_db)) -> UserList:
+    """ Retrieve all users. """
+    user_list = db.query(User).all()
+    return UserList(users=user_list)

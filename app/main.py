@@ -3,13 +3,14 @@
 import logging
 from contextlib import asynccontextmanager
 import asyncio
-from typing import List, Generator, AsyncGenerator
+from typing import Generator, AsyncGenerator
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker, Session
 from fastapi import FastAPI, Depends
 from app.core.database import engine, Base
 from app.api.v1.routes import users
 from app.models.user import User
+from app.schemas.user import UserList
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -57,7 +58,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
 # Initialize FastAPI app with optimized lifespan function
 app = FastAPI(title="FastAPI Scaffold", lifespan=lifespan)
-app.include_router(users.router, prefix="/users", tags=["Users"])
+app.include_router(users.router, prefix="/users", tags=[])
 
 # Dependency to get database session
 def get_db() -> Generator[Session, None, None]:
@@ -80,8 +81,3 @@ def get_db() -> Generator[Session, None, None]:
 async def root() -> dict:
     """Root endpoint."""
     return {"message": "Welcome to FastAPI Scaffold"}
-
-@app.get("/users")
-async def get_users(db: Session = Depends(get_db)) -> List[User]:
-    """Endpoint to read all users."""
-    return db.query(User).all()
