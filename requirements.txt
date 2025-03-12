@@ -9,3 +9,11 @@ requests
 python-dotenv
 python-json-logger
 pytz
+
+# Testing libraries
+pytest
+pytest-asyncio
+
+# Linting and formatting
+flake8
+black
