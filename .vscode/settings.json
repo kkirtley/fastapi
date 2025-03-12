@@ -1,0 +1,10 @@
+{
+    "editor.wordWrap": "on",
+    "editor.wordWrapColumn": 120,
+    "python.formatting.provider": "black",
+    "editor.formatOnSave": true,
+    "python.formatting.blackArgs": [
+        "--line-length",
+        "120"
+    ]
+}

@@ -1,6 +1,8 @@
-""" User model definition."""
+"""User model definition."""
+
 from sqlalchemy import Column, Integer, String
 from app.core.database import Base
+
 
 class User(Base):
     """
@@ -11,6 +13,7 @@ class User(Base):
         name (str): The name of the user.
         email (str): The unique email address of the user.
     """
+
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)

@@ -1,15 +1,19 @@
-""" User routes. """
+"""User routes."""
+
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException
 from app.models.user import User
 from app.schemas.user import UserCreate, UserResponse, UserDelete, UserUpdate, UserList
 from app.core.database import get_db
+from app.app_logger import AppLogger
 
+logger = AppLogger().get_logger()
 router = APIRouter(tags=["Users"])
+
 
 @router.post("/", response_model=UserResponse)
 def create_user(user: UserCreate, db: Session = Depends(get_db)) -> UserResponse:
-    """ Create a new user."""
+    """Create a new user."""
     db_user = db.query(User).filter(User.email == user.email).first()
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
@@ -17,19 +21,22 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)) -> UserResponse
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
+
     return UserResponse.model_validate(new_user)
+
 
 @router.get("/{user_id}", response_model=UserResponse)
 def get_user(user_id: int, db: Session = Depends(get_db)) -> UserResponse:
-    """ Retrieve a user by ID."""
+    """Retrieve a user by ID."""
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return UserResponse.model_validate(user)
 
+
 @router.put("/{user_id}", response_model=UserUpdate)
 def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_db)) -> UserUpdate:
-    """ Update a user by ID."""
+    """Update a user by ID."""
     db_user = db.query(User).filter(User.id == user_id).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -39,9 +46,10 @@ def update_user(user_id: int, user: UserCreate, db: Session = Depends(get_db)) -
     db.refresh(db_user)
     return UserUpdate.model_validate(db_user)
 
+
 @router.delete("/{user_id}", response_model=UserDelete)
 def delete_user(user_id: int, db: Session = Depends(get_db)) -> UserDelete:
-    """ Delete a user by ID."""
+    """Delete a user by ID."""
     db_user = db.query(User).filter(User.id == user_id).first()
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -49,8 +57,10 @@ def delete_user(user_id: int, db: Session = Depends(get_db)) -> UserDelete:
     db.commit()
     return UserDelete(id=user_id, deleted=True)
 
-@router.get("/", response_model=UserList) 
+
+@router.get("/", response_model=UserList)
 def get_users(db: Session = Depends(get_db)) -> UserList:
-    """ Retrieve all users. """
+    """Retrieve all users."""
     user_list = db.query(User).all()
+    logger.info("Users Listed")
     return UserList(users=user_list)
