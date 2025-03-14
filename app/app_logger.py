@@ -9,7 +9,7 @@ import pytz
 class AppLogger:
     """Application logger class."""
 
-    def __init__(self, log_file: str = "app.log"):
+    def __init__(self, log_file: str = "/var/log/app/fastapi.log"):
         self.logger = logging.getLogger("app_logger")
         self.logger.setLevel(logging.INFO)
         log_handler = logging.FileHandler(filename=log_file)

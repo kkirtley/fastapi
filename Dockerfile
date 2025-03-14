@@ -11,16 +11,15 @@ RUN addgroup --system appgroup && adduser --system --group appuser
 # Set the working directory
 WORKDIR /app
 
-# Install dependencies
 # Copy the requirements files
 COPY requirements.txt requirements-dev.txt ./
 
 # Install dependencies based on the environment
 ARG ENVIRONMENT=${ENVIRONMENT}
 RUN if [ "$ENVIRONMENT" = "development" ]; then \
-        pip install --no-cache-dir -r requirements-dev.txt; \
+    pip install --no-cache-dir -r requirements-dev.txt; \
     else \
-        pip install --no-cache-dir -r requirements.txt; \
+    pip install --no-cache-dir -r requirements.txt; \
     fi
 
 
@@ -29,6 +28,10 @@ COPY . .
 
 # Change ownership of the application directory
 RUN chown -R appuser:appgroup /app
+
+# Create the log directory and set permissions
+RUN mkdir -p /var/log/app && chown appuser:appgroup /var/log/app && chmod 755 /var/log/app && \
+    touch /var/log/app/fastapi.log && chown appuser:appgroup /var/log/app/fastapi.log
 
 # Switch to the non-root user
 USER appuser

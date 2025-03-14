@@ -6,6 +6,8 @@ from typing import Generator, AsyncGenerator
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import sessionmaker, Session
 from fastapi import FastAPI
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from app.core.database import engine, Base
 from app.api.v1.routes import users
 from app.app_logger import AppLogger
@@ -61,7 +63,13 @@ async def lifespan(fastapi_app: FastAPI) -> AsyncGenerator[None, None]:
 # Initialize FastAPI app with optimized lifespan function
 app = FastAPI(title="FastAPI Scaffold", lifespan=lifespan)
 app.include_router(users.router, prefix="/users", tags=[])
+# Mount the static files directory
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    """Serve the favicon.ico file."""
+    return FileResponse("app/static/favicon.ico")
 
 # Dependency to get database session
 def get_db() -> Generator[Session, None, None]:
