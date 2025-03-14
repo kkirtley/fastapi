@@ -1,0 +1,10 @@
+# Include all production dependencies
+-r requirements.txt
+
+# Testing libraries
+pytest
+pytest-asyncio
+
+# Linting and formatting
+flake8
+black

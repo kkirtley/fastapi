@@ -5,7 +5,6 @@ FROM python:3.11-slim as base
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-
 # Create a non-root user
 RUN addgroup --system appgroup && adduser --system --group appuser
 
@@ -13,8 +12,17 @@ RUN addgroup --system appgroup && adduser --system --group appuser
 WORKDIR /app
 
 # Install dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy the requirements files
+COPY requirements.txt requirements-dev.txt ./
+
+# Install dependencies based on the environment
+ARG ENVIRONMENT=${ENVIRONMENT}
+RUN if [ "$ENVIRONMENT" = "development" ]; then \
+        pip install --no-cache-dir -r requirements-dev.txt; \
+    else \
+        pip install --no-cache-dir -r requirements.txt; \
+    fi
+
 
 # Copy the current directory contents into the container at /app
 COPY . .
@@ -28,5 +36,5 @@ USER appuser
 # Expose the port the app runs on
 EXPOSE 8000
 
-# Run the application
+# Run the application. Do not use --reload in production as it is not recommended for performance and security reasons.
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
