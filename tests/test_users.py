@@ -36,7 +36,8 @@ def test_create_user_success(mock_db, mocker) -> None:
 
     # Call the create_user function
     response = create_user(user=user_create, db=mock_db)
-    validate_user = UserResponse.model_validate(mock_user)
+    validate_user = UserResponse.model_validate(
+        mock_user)  # Validate the response
 
     # Assert the response
     assert response.id == validate_user.id
