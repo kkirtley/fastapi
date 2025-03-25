@@ -13,6 +13,7 @@ pytz
 # Testing libraries
 pytest
 pytest-asyncio
+httpx
 
 # Linting and formatting
 flake8
