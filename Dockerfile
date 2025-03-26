@@ -1,9 +1,9 @@
 # Use an official Python runtime as a parent image
-FROM python:3.11-slim as base
+FROM python:3.11-slim AS base
 
 # Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 # Create a non-root user
 RUN addgroup --system appgroup && adduser --system --group appuser
@@ -30,8 +30,11 @@ COPY . .
 RUN chown -R appuser:appgroup /app
 
 # Create the log directory and set permissions
-RUN mkdir -p /var/log/app && chown appuser:appgroup /var/log/app && chmod 755 /var/log/app && \
-    touch /var/log/app/fastapi.log && chown appuser:appgroup /var/log/app/fastapi.log
+RUN mkdir -p /var/log/app && \
+    chown appuser:appgroup /var/log/app && \
+    chmod 755 /var/log/app && \
+    touch /var/log/app/fastapi.log && \
+    chown appuser:appgroup /var/log/app/fastapi.log
 
 # Switch to the non-root user
 USER appuser

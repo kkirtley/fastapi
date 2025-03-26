@@ -2,11 +2,11 @@
 
 import pytest
 from sqlalchemy.orm import Session
-from fastapi.testclient import TestClient
+# from fastapi.testclient import TestClient
 from fastapi import HTTPException
 from app.models.user import User
 from app.schemas.user import UserCreate, UserResponse, UserUpdate
-from app.main import app
+# from app.main import app
 from app.api.v1.routes.users import update_user, create_user, get_user, delete_user
 
 
