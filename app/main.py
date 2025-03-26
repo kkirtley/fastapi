@@ -1,4 +1,9 @@
-"""Main application file"""
+"""Main application file.
+
+This file initializes the FastAPI application, sets up routes, middleware, and
+lifespan events, and configures static file handling. It serves as the entry point
+for the application and provides a scaffold for building FastAPI projects.
+"""
 
 from contextlib import asynccontextmanager
 import asyncio
@@ -13,19 +18,31 @@ from app.api.v1.routes import users
 from app.app_logger import AppLogger
 
 # Configure logging
+# This sets up a custom logger for the application using the AppLogger class.
 logger = AppLogger().get_logger()
 
 # Create session factory
+# This session factory is used to create database sessions for interacting with the database.
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 # Application startup and shutdown events
 @asynccontextmanager
 async def lifespan(fastapi_app: FastAPI) -> AsyncGenerator[None, None]:
-    """Application startup and shutdown lifecycle events."""
+    """Application startup and shutdown lifecycle events.
+
+    This function handles tasks that need to be performed when the application starts
+    and shuts down, such as database migrations and resource cleanup.
+
+    Args:
+        fastapi_app (FastAPI): The FastAPI application instance.
+
+    Yields:
+        None: Keeps the application running.
+    """
     logger.info("Starting up... Running DB migrations")
 
-    # Store DB engine and session factory in app state
+    # Store DB engine and session factory in app state for global access
     fastapi_app.state.db_engine = engine
     fastapi_app.state.SessionLocal = SessionLocal
 
@@ -35,6 +52,7 @@ async def lifespan(fastapi_app: FastAPI) -> AsyncGenerator[None, None]:
 
     while retries > 0:
         try:
+            # Run database migrations
             await asyncio.get_running_loop().run_in_executor(
                 None, Base.metadata.create_all, fastapi_app.state.db_engine
             )
@@ -56,20 +74,33 @@ async def lifespan(fastapi_app: FastAPI) -> AsyncGenerator[None, None]:
 
     yield  # Keep application running
 
+    # Cleanup tasks during shutdown
     logger.info("Shutting down... Closing database connections")
     await asyncio.get_running_loop().run_in_executor(None, app.state.db_engine.dispose)
 
 
 # Initialize FastAPI app with optimized lifespan function
+# The lifespan function handles startup and shutdown events.
 app = FastAPI(title="FastAPI Scaffold", lifespan=lifespan)
-app.include_router(users.router, prefix="/users", tags=[])
+
+# Include user-related routes
+# This adds the user-related API endpoints under the "/users" prefix.
+app.include_router(users.router, prefix="/users", tags=["Users"])
+
 # Mount the static files directory
+# This serves static files (e.g., favicon.ico) from the "app/static" directory.
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
 
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
-    """Serve the favicon.ico file."""
+    """Serve the favicon.ico file.
+
+    This endpoint serves the favicon for the application, which is typically displayed
+    in the browser tab.
+    """
     return FileResponse("app/static/favicon.ico")
+
 
 # Dependency to get database session
 def get_db() -> Generator[Session, None, None]:
@@ -91,5 +122,12 @@ def get_db() -> Generator[Session, None, None]:
 
 @app.get("/")
 async def root() -> dict:
-    """Root endpoint."""
+    """Root endpoint.
+
+    This is the default endpoint for the application. It provides a simple
+    welcome message to indicate that the application is running.
+
+    Returns:
+        dict: A welcome message.
+    """
     return {"message": "Welcome to FastAPI Scaffold"}

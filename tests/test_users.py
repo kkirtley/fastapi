@@ -1,26 +1,42 @@
-"""Test cases for user-related API endpoints."""
+"""Test cases for user-related API endpoints.
+
+This file contains unit tests for user-related API endpoints in a FastAPI application.
+It uses mock objects to simulate database interactions and validate the behavior of
+the application without requiring a real database connection.
+
+For integration tests, you can use FastAPI's TestClient to test the actual API endpoints.
+"""
 
 import pytest
 from sqlalchemy.orm import Session
-# from fastapi.testclient import TestClient
+# from fastapi.testclient import TestClient  # Uncomment for integration tests
 from fastapi import HTTPException
 from app.models.user import User
 from app.schemas.user import UserCreate, UserResponse, UserUpdate
-# from app.main import app
+# from app.main import app  # Uncomment for integration tests
 from app.api.v1.routes.users import update_user, create_user, get_user, delete_user
 
 
-# client = TestClient(app) # unneeded unless integration tests are implemented
+# client = TestClient(app)  # Uncomment if you want to implement integration tests
 
 
 @pytest.fixture
 def mock_db(mocker):
-    """Fixture to create a mock database session."""
+    """Fixture to create a mock database session.
+
+    This fixture uses the `mocker` library to create a mock object that simulates
+    a SQLAlchemy database session. It is used to test database interactions without
+    requiring a real database connection.
+    """
     return mocker.MagicMock(spec=Session)
 
 
 def test_create_user_success(mock_db, mocker) -> None:
-    """Test the successful creation of a new user."""
+    """Test the successful creation of a new user.
+
+    This test validates that the `create_user` function correctly adds a new user
+    to the database and returns the expected response.
+    """
     # Prepare test data
     new_user_data = {"name": "New User", "email": "newuser@example.com"}
     user_create = UserCreate(**new_user_data)
@@ -53,7 +69,11 @@ def test_create_user_success(mock_db, mocker) -> None:
 
 
 def test_create_user_duplicate_email(mock_db) -> None:
-    """Test creating a user with an email that already exists."""
+    """Test creating a user with an email that already exists.
+
+    This test ensures that the `create_user` function raises an HTTPException
+    when attempting to create a user with a duplicate email.
+    """
     existing_user = User(id=1, name="Existing User",
                          email="existing@example.com")
     user_create = UserCreate(name="New User", email="existing@example.com")
@@ -70,7 +90,11 @@ def test_create_user_duplicate_email(mock_db) -> None:
 
 
 def test_get_user_success(mock_db) -> None:
-    """Test the successful retrieval of a user by ID."""
+    """Test the successful retrieval of a user by ID.
+
+    This test validates that the `get_user` function correctly retrieves a user
+    from the database when the user exists.
+    """
     mock_user = User(id=1, name="Test User", email="test@example.com")
     mock_db.query.return_value.filter.return_value.first.return_value = mock_user
 
@@ -82,7 +106,11 @@ def test_get_user_success(mock_db) -> None:
 
 
 def test_get_user_not_found(mock_db) -> None:
-    """Test the retrieval of a user by ID that does not exist."""
+    """Test the retrieval of a user by ID that does not exist.
+
+    This test ensures that the `get_user` function raises an HTTPException
+    when the user is not found in the database.
+    """
     mock_db.query.return_value.filter.return_value.first.return_value = None
 
     # Call the get_user function and assert the exception
@@ -94,7 +122,11 @@ def test_get_user_not_found(mock_db) -> None:
 
 
 def test_update_user_success(mock_db, mocker) -> None:
-    """Test the successful update of a user's information."""
+    """Test the successful update of a user's information.
+
+    This test validates that the `update_user` function correctly updates a user's
+    information in the database and returns the updated user.
+    """
     mock_user = User(id=1, name="Old Name", email="old@example.com")
     updated_data = {"name": "New Name", "email": "new@example.com"}
     user_update = UserUpdate(**updated_data)
@@ -117,7 +149,11 @@ def test_update_user_success(mock_db, mocker) -> None:
 
 
 def test_update_user_not_found(mock_db) -> None:
-    """Test updating a user that does not exist."""
+    """Test updating a user that does not exist.
+
+    This test ensures that the `update_user` function raises an HTTPException
+    when the user is not found in the database.
+    """
     updated_data = {"name": "New Name", "email": "new@example.com"}
     user_update = UserUpdate(**updated_data)
     mock_db.query.return_value.filter.return_value.first.return_value = None
@@ -131,7 +167,11 @@ def test_update_user_not_found(mock_db) -> None:
 
 
 def test_delete_user_success(mock_db, mocker) -> None:
-    """Test the successful deletion of a user."""
+    """Test the successful deletion of a user.
+
+    This test validates that the `delete_user` function correctly deletes a user
+    from the database and returns a success message.
+    """
     mock_user = User(id=1, name="Test User", email="test@example.com")
     mock_db.query.return_value.filter.return_value.first.return_value = mock_user
 
@@ -151,7 +191,11 @@ def test_delete_user_success(mock_db, mocker) -> None:
 
 
 def test_delete_user_not_found(mock_db) -> None:
-    """Test deleting a user that does not exist."""
+    """Test deleting a user that does not exist.
+
+    This test ensures that the `delete_user` function raises an HTTPException
+    when the user is not found in the database.
+    """
     mock_db.query.return_value.filter.return_value.first.return_value = None
 
     # Call the delete_user function and assert the exception
