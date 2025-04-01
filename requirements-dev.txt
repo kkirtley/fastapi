@@ -2,9 +2,7 @@
 -r requirements.txt
 
 # Testing libraries
-pytest
-pytest-asyncio
+
 
 # Linting and formatting
-flake8
-black
+black==24.8.0

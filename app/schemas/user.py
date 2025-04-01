@@ -8,6 +8,7 @@ class BaseConfig(BaseModel):
     """Base configuration for ORM models."""
 
     class Config:
+        """Pydantic configuration to allow ORM mode."""
         from_attributes = True
 
 

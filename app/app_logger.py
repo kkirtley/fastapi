@@ -41,7 +41,8 @@ class AppLogger:
             try:
                 os.makedirs(log_dir, exist_ok=True)
             except OSError as e:
-                raise RuntimeError(f"Failed to create log directory: {log_dir}") from e
+                raise RuntimeError(
+                    f"Failed to create log directory: {log_dir}") from e
 
         # Set up a rotating file handler to manage log file size
         try:
@@ -49,7 +50,8 @@ class AppLogger:
                 filename=log_file, maxBytes=5 * 1024 * 1024, backupCount=3  # 5 MB per file, 3 backups
             )
         except Exception as e:
-            raise RuntimeError(f"Failed to set up log file handler: {e}") from e
+            raise RuntimeError(
+                f"Failed to set up log file handler: {e}") from e
 
         # Customize the JSON formatter to include date and time
         formatter = CustomJsonFormatter(
@@ -113,3 +115,6 @@ class CustomJsonFormatter(jsonlogger.JsonFormatter):
             return dt.strftime(datefmt)
         # Return the timestamp in ISO 8601 format by default
         return dt.isoformat()
+
+
+logger = AppLogger().get_logger()

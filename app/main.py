@@ -67,9 +67,11 @@ async def lifespan(fastapi_app: FastAPI) -> AsyncGenerator[None, None]:
                 retries,
             )
             await asyncio.sleep(wait_time)
-            wait_time = min(wait_time * 2, 10)  # Exponential backoff (caps at 10s)
+            # Exponential backoff (caps at 10s)
+            wait_time = min(wait_time * 2, 10)
     else:
-        logger.error("Failed to connect to the database after multiple attempts.")
+        logger.error(
+            "Failed to connect to the database after multiple attempts.")
         raise RuntimeError("Database connection failed")
 
     yield  # Keep application running

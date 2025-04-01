@@ -172,8 +172,14 @@ If your project uses a database (e.g., PostgreSQL) and you want to run both the 
      docker-compose logs -f
      ```
    - The FastAPI app should be available at [http://127.0.0.1:8000](http://127.0.0.1:8000).
+   - 
+4. *** Login to Container ***
 
-4. **Shut Down Services**
+   ```bash
+   sudo docker exec -it [CONTAINER ID] /bin/sh
+   ```
+
+5. **Shut Down Services**
 
    ```bash
    docker-compose down
