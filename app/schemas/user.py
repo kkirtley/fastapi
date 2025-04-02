@@ -7,9 +7,9 @@ from pydantic import BaseModel, EmailStr
 class BaseConfig(BaseModel):
     """Base configuration for ORM models."""
 
-    class Config:
-        """Pydantic configuration to allow ORM mode."""
-        from_attributes = True
+    model_config = {
+        "from_attributes": True,
+    }
 
 
 class UserCreate(BaseConfig):
@@ -27,17 +27,16 @@ class UserResponse(BaseConfig):
     email: EmailStr
 
 
-class UserDelete(BaseConfig):
+class UserDelete(UserResponse):
     """Schema for deleting a user."""
 
-    id: int
-    deleted: bool
+    pass
 
 
-class UserUpdate(UserResponse):
+class UserUpdate(UserCreate):
     """Schema for updating a user."""
 
-    updated: bool
+    pass
 
 
 class UserList(BaseConfig):

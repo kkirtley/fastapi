@@ -242,6 +242,14 @@ If you are using a database (e.g., via Docker Compose), you may have additional 
 
 You can place these in separate modules or directly in `main.py` based on project complexity. The current repository may or may not include these details.
 
+## Logging
+
+Import the logger instance with the code below to inject into your files. 
+
+from app.app_logger import logger
+
+Use: logger.warn("These are not the droids you are looking for!")
+
 ## Testing
 
 If you add tests or a testing framework (e.g., `pytest`), you can run them:
