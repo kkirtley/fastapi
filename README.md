@@ -10,7 +10,7 @@ This repository provides a minimal yet illustrative FastAPI application, includi
 - Set up a project with FastAPI
 - Structure Python modules for clarity
 - Create endpoints and interactive API documentation
-- Use Docker/Docker Compose to run both the FastAPI app and a database service
+- Use Docker/Docker Compose to run both the FastAPI app and a Postgres database service
 - Manage environment variables for local or containerized development
 
 ## Features

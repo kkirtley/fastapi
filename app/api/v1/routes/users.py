@@ -7,6 +7,7 @@ from app.schemas.user import UserCreate, UserResponse, UserDelete, UserUpdate
 from app.core.database import get_db
 from app.app_logger import logger
 
+# logger = AppLogger().get_logger()
 router = APIRouter(tags=["Users"])
 
 # Helper functions
