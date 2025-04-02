@@ -10,7 +10,7 @@ import logging
 import os
 from datetime import datetime
 from logging.handlers import RotatingFileHandler
-from pythonjsonlogger import jsonlogger
+from pythonjsonlogger.json import JsonFormatter
 import pytz
 
 
@@ -72,7 +72,7 @@ class AppLogger:
         return self.logger
 
 
-class CustomJsonFormatter(jsonlogger.JsonFormatter):
+class CustomJsonFormatter(JsonFormatter):
     """Custom JSON formatter to handle UTC timezone for asctime.
 
     This formatter customizes the log format based on the log level and ensures

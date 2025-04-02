@@ -3,7 +3,7 @@
 from sqlalchemy.orm import Session
 from fastapi import APIRouter, Depends, HTTPException
 from app.models.user import User
-from app.schemas.user import UserCreate, UserResponse, UserDelete, UserUpdate
+from app.schemas.user import UserCreate, UserResponse, UserUpdate
 from app.core.database import get_db
 from app.app_logger import logger
 

@@ -88,7 +88,7 @@ def test_create_user_duplicate_email(mock_session, mock_user) -> None:
         create_user(user=user_create, db=mock_session)
 
     assert exc_info.value.status_code == 400
-    assert exc_info.value.detail == "Email already registered"
+    assert exc_info.value.detail == "Email already in use"
 
 
 def test_get_user_success(mock_session, mock_user) -> None:
