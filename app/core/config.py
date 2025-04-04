@@ -1,11 +1,18 @@
-# app/core/config.py
-from pydantic_settings import BaseSettings, SettingsConfigDict
+""" Configuration settings for the FastAPI application."""
+import os
 from typing import List
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
 
 class Settings(BaseSettings):
+    """
+    Application settings and configuration.
+    This class uses Pydantic to manage application settings,
+    including environment variables and default values.
+    """
     PROJECT_NAME: str = "FastAPI Scaffold"
     VERSION: str = "1.0.0"
-    ENV: str
+    ENV: str = "production"  # Default to production
     HOST: str = "0.0.0.0"
     PORT: int = 8000
     DB_MAX_RETRIES: int = 5
@@ -13,29 +20,24 @@ class Settings(BaseSettings):
     DB_RETRY_MAX_DELAY: float = 10.0
     ALLOWED_ORIGINS: List[str] = ["http://localhost", "http://localhost:8000"]
     LOG_LEVEL: str = "INFO"
-
-    # Add database fields
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_DB: str
-    POSTGRES_PORT: str = "5432"  # Default port
-    POSTGRES_HOST: str = "localhost"  # Default host
     DATABASE_URL: str
-    COMPOSE_BAKE: bool
 
-
-    # @property
-    # def database_url(self) -> str:
-    #     """Construct the DATABASE_URL dynamically."""
-    #     return (
-    #         f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@"
-    #         f"{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
-    #     )
+    # Google OAuth settings (optional in non-production)
+    GOOGLE_CLIENT_ID: str | None = None
+    GOOGLE_CLIENT_SECRET: str | None = None
+    SECRET_KEY: str | None = None  # For JWT and session middleware
+    FRONTEND_URL: str = "http://localhost:8000"
 
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=f".env.{os.getenv('APP_ENV', 'production')}",
         env_file_encoding="utf-8",
         case_sensitive=False,
+        extra="ignore",
     )
+
+    @property
+    def is_production(self) -> bool:
+        """Check if the current environment is production."""
+        return self.ENV == "production"
 
 settings = Settings()

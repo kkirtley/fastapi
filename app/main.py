@@ -6,16 +6,16 @@ from typing import AsyncGenerator
 from sqlalchemy.exc import OperationalError
 from sqlalchemy.orm import Session
 from fastapi import FastAPI, Depends
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from app.core.database import engine, Base, get_db  # Import get_db here
+from app.core.database import engine, Base, get_db
 from app.core.config import settings
-from app.api.v1.routes import users
 from app.app_logger import logger
 
-# Import the users router
+# Import routers
 from app.api.v1.routes.users import router as users_router
 
 STATIC_DIR = Path("app/static")
@@ -67,6 +67,13 @@ app = FastAPI(
     redoc_url=None
 )
 
+# Middleware for logging requests and responses
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    """ Custom exception handler for request validation errors."""
+    logger.error("Validation error: %s: %s", request.url.path, exc.errors())
+    return JSONResponse(status_code=422, content={"detail": exc.errors()})
+
 # CORS middleware setup
 app.add_middleware(
     CORSMiddleware,
@@ -116,6 +123,6 @@ async def health_check(db: Session = Depends(get_db)) -> dict:
 
 
 # Included Routers
-app.include_router(users.router, prefix="/api/v1/users", tags=["users"])
+app.include_router(users_router, prefix="/api/v1/users", tags=["users"])
 
 # Add more routers as needed
