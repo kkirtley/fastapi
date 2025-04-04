@@ -1,11 +1,11 @@
 # FastAPI Example Project
 
-[![Python Version](https://img.shields.io/badge/python-3.7%2B-blue.svg)](https://www.python.org/downloads/)
+[![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Overview
 
-This repository provides a minimal yet illustrative FastAPI application, including database integration and Docker support. It demonstrates how to:
+This repository provides a FastAPI application with database integration and Docker support. It demonstrates how to:
 
 - Set up a project with FastAPI
 - Structure Python modules for clarity and maintainability
@@ -62,7 +62,7 @@ fastapi/
 
 ## Prerequisites
 
-- [Python 3.7+](https://www.python.org/downloads/) installed
+- [Python 3.10+](https://www.python.org/downloads/) installed
 - [pip](https://pip.pypa.io/en/stable/) for installing Python packages
 - (Optional) [Docker](https://www.docker.com/) for containerized development
 - (Optional) [Docker Compose](https://docs.docker.com/compose/) for multi-container setups
@@ -155,15 +155,71 @@ uvicorn app.main:app --reload
 
 ## Environment Variables
 
-Use a `.env` file to manage environment variables. Example:
+To configure the application, use a `.env` file to manage environment variables. Below is an example of the required variables and their purpose:
+
+### Example `.env` File
 
 ```bash
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_NAME=fastapi_db
-DB_HOST=db
-DB_PORT=5432
+# PostgreSQL Database Configuration
+POSTGRES_USER=postgres          # Database username
+POSTGRES_PASSWORD=password      # Database password
+POSTGRES_DB=fastapi_db          # Database name
+POSTGRES_PORT=5432              # Database port
+
+# FastAPI Application Configuration
+ENV=development                 # Application environment (e.g., development, production)
+DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_DB}
+                                 # Connection string for the PostgreSQL database
 ```
+
+### Notes:
+
+1. **Database Connection**:
+
+   - The `DATABASE_URL` is dynamically constructed using the `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_PORT`, and `POSTGRES_DB` variables.
+   - If you are running the database in Docker, ensure the `DATABASE_URL` points to `localhost` when running the app locally or `db` when running the app in Docker Compose.
+
+2. **Environment-Specific Files**:
+
+   - You can create environment-specific `.env` files (e.g., `.env.development`, `.env.production`) and set the `APP_ENV` variable in your `.env` file to load the appropriate configuration:
+     ```bash
+     APP_ENV=development
+     ```
+
+3. **Docker Compose Integration**:
+
+   - The `docker-compose.yml` file uses the same environment variables to configure the PostgreSQL database and the FastAPI application. Ensure the `.env` file is in the root directory so Docker Compose can load it automatically.
+
+4. **Default Values**:
+   - The `docker-compose.yml` file provides default values for `POSTGRES_USER`, `POSTGRES_PASSWORD`, and `POSTGRES_DB` if they are not set in the `.env` file:
+     ```yaml
+     environment:
+       POSTGRES_USER: ${POSTGRES_USER:-postgres}
+       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+       POSTGRES_DB: ${POSTGRES_DB:-postgres}
+     ```
+
+### Setting Up the Environment
+
+1. **Create a `.env` File**:
+
+   - Copy the `.env.example` file to `.env`:
+     ```bash
+     cp .env.example .env
+     ```
+
+2. **Edit the `.env` File**:
+
+   - Update the values in the `.env` file to match your local or production setup.
+
+3. **Verify Environment Variables**:
+
+   - Ensure the `DATABASE_URL` is correctly set for your environment:
+     - For local development: `localhost`
+     - For Docker Compose: `db`
+
+4. **Load Environment Variables**:
+   - FastAPI automatically loads the `.env` file using the `pydantic-settings` library. Ensure the `.env` file is in the root directory of the project.
 
 ## API Endpoints
 
@@ -197,6 +253,13 @@ Contributions are welcome! To contribute:
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
+
+## Acknowledgments
+
+- [FastAPI](https://fastapi.tiangolo.com/)
+- [Uvicorn](https://www.uvicorn.org/)
+- [Docker Compose](https://docs.docker.com/compose/)
+- The open-source community for their contributions.
 
 ---
 
