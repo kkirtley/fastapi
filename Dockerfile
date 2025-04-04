@@ -22,7 +22,9 @@ COPY requirements.txt requirements-dev.txt ./
 
 # Install dependencies based on the environment
 # The ENVIRONMENT build argument determines whether to install development or production dependencies.
-ARG ENVIRONMENT=${ENVIRONMENT}
+ARG ENVIRONMENT=${ENV}
+RUN echo "BUILD ENVIRONMENT = $ENV"
+RUN pip install --upgrade pip
 RUN if [ "$ENVIRONMENT" = "development" ]; then \
     pip install --no-cache-dir -r requirements-dev.txt; \
     else \

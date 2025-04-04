@@ -111,7 +111,7 @@ You now have all required packages installed locally.
 You can run the application using Uvicorn (installed via `requirements.txt`):
 
 ```bash
-uvicorn main:app --reload
+uvicorn app.main:app --reload
 ```
 
 - **Swagger UI**: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
@@ -172,8 +172,9 @@ If your project uses a database (e.g., PostgreSQL) and you want to run both the 
      docker-compose logs -f
      ```
    - The FastAPI app should be available at [http://127.0.0.1:8000](http://127.0.0.1:8000).
-   - 
-4. *** Login to Container ***
+   -
+
+4. **_ Login to Container _**
 
    ```bash
    sudo docker exec -it [CONTAINER ID] /bin/sh
@@ -182,7 +183,7 @@ If your project uses a database (e.g., PostgreSQL) and you want to run both the 
 5. **Shut Down Services**
 
    ```bash
-   docker-compose down
+   docker compose down --volumes --rmi all
    ```
 
 ## Environment Variables
@@ -244,7 +245,7 @@ You can place these in separate modules or directly in `main.py` based on projec
 
 ## Logging
 
-Import the logger instance with the code below to inject into your files. 
+Import the logger instance with the code below to inject into your files.
 
 from app.app_logger import logger
 

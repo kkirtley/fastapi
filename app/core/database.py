@@ -3,10 +3,8 @@
 import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base  # Combined import for clarity
-from dotenv import load_dotenv
 
-# Load environment variables from a .env file into os.environ
-load_dotenv()
+from app.core.config import settings
 
 # Retrieve the database URL from the environment variables.
 # This URL should be formatted according to the requirements of your database.
@@ -16,7 +14,7 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 # The engine establishes the core interface to the database.
 # The 'connect_args' parameter here sets the timezone to UTC.
 engine = create_engine(
-    DATABASE_URL,
+    settings.DATABASE_URL,
     connect_args={"options": "-c timezone=utc"}
 )
 

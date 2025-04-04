@@ -7,12 +7,12 @@ the application to maintain consistent and informative logs.
 """
 
 import logging
+from logging.handlers import RotatingFileHandler
 import os
 from datetime import datetime
-from logging.handlers import RotatingFileHandler
-from pythonjsonlogger.json import JsonFormatter
+# pylint: disable=no-name-in-module
+from pythonjsonlogger.jsonlogger import JsonFormatter
 import pytz
-
 
 class AppLogger:
     """Application logger class.
@@ -116,5 +116,5 @@ class CustomJsonFormatter(JsonFormatter):
         # Return the timestamp in ISO 8601 format by default
         return dt.isoformat()
 
-
+# instance of the logger to be used in the application
 logger = AppLogger().get_logger()

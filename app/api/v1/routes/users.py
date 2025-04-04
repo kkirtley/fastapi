@@ -7,12 +7,9 @@ from app.schemas.user import UserCreate, UserResponse, UserUpdate
 from app.core.database import get_db
 from app.app_logger import logger
 
-# logger = AppLogger().get_logger()
-router = APIRouter(tags=["Users"])
+router = APIRouter(tags=["users"])
 
 # Helper functions
-
-
 def get_user_by_id(user_id: int, db: Session) -> User | None:
     """Helper function to retrieve a user by ID."""
     return db.get(User, user_id)
