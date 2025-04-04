@@ -54,6 +54,7 @@ coverage.xml
 .hypothesis/
 .pytest_cache/
 cover/
+scripts/git_log.sh
 
 # Translations
 *.mo
