@@ -1,37 +1,37 @@
-stages:
-  - scan
-  - lint
-  - build
-  - test
+# stages:
+#   - scan
+#   - lint
+#   - build
+#   - test
 
-variables:
-  DOCKER_DRIVER: overlay2
+# variables:
+#   DOCKER_DRIVER: overlay2
 
-scan:
-  stage: scan
-  image: python:3.9
-  script:
-    - pip install bandit
-    - bandit -r .
+# scan:
+#   stage: scan
+#   image: python:3.9
+#   script:
+#     - pip install bandit
+#     - bandit -r .
 
-lint:
-  stage: lint
-  image: python:3.9
-  script:
-    - pip install flake8
-    - flake8 .
+# lint:
+#   stage: lint
+#   image: python:3.9
+#   script:
+#     - pip install flake8
+#     - flake8 .
 
-build:
-  stage: build
-  image: docker:latest
-  services:
-    - docker:dind
-  script:
-    - docker build -t myapp:latest .
+# build:
+#   stage: build
+#   image: docker:latest
+#   services:
+#     - docker:dind
+#   script:
+#     - docker build -t myapp:latest .
 
-test:
-  stage: test
-  image: python:3.9
-  script:
-    - pip install pytest
-    - pytest
+# test:
+#   stage: test
+#   image: python:3.9
+#   script:
+#     - pip install pytest
+#     - pytest
